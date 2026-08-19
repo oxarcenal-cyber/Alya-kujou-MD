@@ -14,7 +14,7 @@
     "format": "prettier --write --config .prettierrc.json \"src/**/*.ts\"",
     "start": "node --max-old-space-size=8192 dist/bot.js",
     "build": "yarn rimraf dist/ && yarn tsc -p . --noEmitOnError false",
-    "postinstall": "yarn build"
+    "postinstall": "node scripts/brand-baileys-banner.js && yarn build"
   },
   "bugs": {
     "url": "https://github.com/REDZEOX/Rias-Gremory/issues"
