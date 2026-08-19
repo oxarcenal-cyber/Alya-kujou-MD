@@ -1,0 +1,127 @@
+import { BaseCommand, Command, Message } from '../../Structures'
+import { IArgs } from '../../Types'
+import { parseCard, findCard, TIER_EMOJI, TIER_NAME, isGif } from '../../lib/CardData'
+import { t } from '../../lib'
+
+const PAGE_SIZE = 8   // cards per page shown as images
+
+@Command('collection', {
+    description: 'View your card collection with images/GIFs',
+    usage: 'coll  /  coll <index>  /  coll p2',
+    category: 'cards',
+    aliases: ['coll', 'mycoll'],
+    cooldown: 5,
+    dm: false,
+    exp: 0
+})
+export default class MyCollectionCommand extends BaseCommand {
+    public override execute = async (M: Message, { context }: IArgs): Promise<void> => {
+        const prefix = this.client.config.prefix
+        const lang   = await this.getLang(M)
+        const user   = await this.client.DB.getUser(M.sender.jid)
+        const coll: string[] = (user as any).cardCollection ?? []
+
+        if (coll.length === 0)
+            return void M.reply(t('card_empty_coll_hint', lang, { p: prefix }))
+
+        const ctx = context.trim()
+
+        // ── Specific card image: coll <num> ────────────────────────────────
+        const cardIdx = parseInt(ctx)
+        if (!isNaN(cardIdx) && cardIdx >= 1 && cardIdx <= coll.length) {
+            const { title, tier } = parseCard(coll[cardIdx - 1])
+            const cardData = findCard(title, tier)
+            if (!cardData) return void M.reply(t('card_not_found_msg', lang))
+
+            const te = (TIER_EMOJI as any)[tier] ?? '🃏'
+            const tn = (TIER_NAME as any)[tier] ?? tier
+            const caption =
+                `${te} *${title}*\n` +
+                `🏷️ *Tier:* ${tier} — ${tn}\n` +
+                `📍 *Collection position:* #${cardIdx}\n` +
+                `🗃️ *Total collection:* ${coll.length}`
+
+            try {
+                const gif = isGif(cardData.url)
+                if (gif) {
+                    const gifBuf = await this.client.utils.getBuffer(cardData.url)
+                    const mp4Buf = await this.client.utils.gifToMp4(gifBuf)
+                    return void await this.client.sendMessage(M.from, {
+                        video: mp4Buf, caption, gifPlayback: true, mimetype: 'video/mp4'
+                    } as any)
+                } else {
+                    const buffer = await this.client.utils.getBufferCapped(cardData.url, 5 * 1024 * 1024)
+                    if (buffer)
+                        return void await M.reply(buffer, 'image', undefined, undefined, caption)
+                    return void M.reply(caption + `\n\n⚠️ _Image unavailable_\n🔗 ${cardData.url}`)
+                }
+            } catch {
+                return void M.reply(caption + `\n\n${t('card_image_failed', lang)}`)
+            }
+        }
+
+        // ── Paginated menu view: coll  or  coll p<N> ───────────────────────
+        const totalPages = Math.ceil(coll.length / PAGE_SIZE)
+        let page = 1
+
+        const pageMatch = ctx.match(/^p(\d+)$/i)
+        if (pageMatch) page = Math.max(1, Math.min(parseInt(pageMatch[1]), totalPages))
+
+        const start = (page - 1) * PAGE_SIZE
+        const end   = Math.min(start + PAGE_SIZE, coll.length)
+
+        // Build list rows for current page cards
+        const rows = coll.slice(start, end).map((c, idx) => {
+            const { title, tier } = parseCard(c)
+            const te = (TIER_EMOJI as any)[tier] ?? '🃏'
+            const tn = (TIER_NAME as any)[tier] ?? tier
+            const globalIdx = start + idx + 1
+            return {
+                title:       `${te} ${title}`,
+                description: `Tier ${tier} — ${tn} • #${globalIdx}`,
+                id:          `${prefix}coll ${globalIdx}`
+            }
+        })
+
+        // Add next page navigation row if more pages exist
+        const sections: { title: string; rows: typeof rows }[] = [
+            { title: `🗃️ Page ${page}/${totalPages}`, rows }
+        ]
+        if (page < totalPages) {
+            sections.push({
+                title: '📄 Navigation',
+                rows: [{
+                    title:       `➡️ Next Page (${page + 1}/${totalPages})`,
+                    description: `Cards ${start + PAGE_SIZE + 1}–${Math.min(start + PAGE_SIZE * 2, coll.length)}`,
+                    id:          `${prefix}coll p${page + 1}`
+                }]
+            })
+        }
+        if (page > 1) {
+            const navSection = sections.find(s => s.title === '📄 Navigation')
+            const prevRow = {
+                title:       `⬅️ Prev Page (${page - 1}/${totalPages})`,
+                description: `Cards ${(page - 2) * PAGE_SIZE + 1}–${(page - 1) * PAGE_SIZE}`,
+                id:          `${prefix}coll p${page - 1}`
+            }
+            if (navSection) navSection.rows.unshift(prevRow)
+            else sections.push({ title: '📄 Navigation', rows: [prevRow] })
+        }
+
+        await this.client.sendMessage(
+            M.from,
+            {
+                text:   `🗃️ *${M.sender.username}'s Collection* (${coll.length} cards)\n📄 Page ${page}/${totalPages}\n\n💡 Tap a card to view it`,
+                footer: '⚡ RedzeoX',
+                title:  '🗃️ My Collection',
+                buttons: [
+                    {
+                        text:     '📋 Open Collection',
+                        sections
+                    }
+                ]
+            } as any,
+            { quoted: M.message }
+        )
+    }
+}

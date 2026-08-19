@@ -1,0 +1,62 @@
+export interface IShopItem {
+    key: string
+    emoji: string
+    name: string
+    desc: string
+    price: number
+    usable: boolean  // can be used directly from inventory
+}
+
+export const SHOP_ITEMS: IShopItem[] = [
+    {
+        key: 'lucky_charm',
+        emoji: '🍀',
+        name: 'Lucky Charm',
+        desc: 'Get 1.5× gold on your next daily claim',
+        price: 2000,
+        usable: false  // auto-applies on next daily
+    },
+    {
+        key: 'pet_treat',
+        emoji: '🦴',
+        name: 'Pet Treat',
+        desc: 'Instantly restore your pet hunger to 100%',
+        price: 500,
+        usable: true
+    },
+    {
+        key: 'crystal_badge',
+        emoji: '💎',
+        name: 'Crystal Badge',
+        desc: 'A shiny decorative badge for your profile',
+        price: 1000,
+        usable: false
+    },
+    {
+        key: 'coin_bag',
+        emoji: '💰',
+        name: 'Coin Bag',
+        desc: 'Instantly receive +500 gold bonus',
+        price: 1500,
+        usable: true
+    },
+    {
+        key: 'xp_scroll',
+        emoji: '📜',
+        name: 'XP Scroll',
+        desc: 'Instantly gain +200 experience points',
+        price: 800,
+        usable: true
+    },
+    {
+        key: 'mystery_box',
+        emoji: '🎁',
+        name: 'Mystery Box',
+        desc: 'Open for a random reward (100–3000 gold)',
+        price: 1200,
+        usable: true
+    }
+]
+
+export const getShopItem = (key: string): IShopItem | undefined =>
+    SHOP_ITEMS.find(i => i.key === key)

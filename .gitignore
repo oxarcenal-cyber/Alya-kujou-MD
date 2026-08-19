@@ -1,0 +1,17 @@
+# Secrets and local runtime state
+.env
+.env.*
+!.env.example
+session/
+auth_info*/
+*.log
+
+# Generated/runtime output
+node_modules/
+dist/
+bot-backup.zip
+.cache/
+
+# Replit-only imported assets and generated previews
+attached_assets/
+artifacts/mockup-sandbox/node_modules/

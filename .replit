@@ -1,0 +1,42 @@
+modules = ["nodejs-20", "web", "python-base-3.13"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+BOT_NAME = "Rias gremory"
+MODS = "919529426293"
+PORT = "5000"
+PREFIX = "-"
+VIDEO_API_KEY = "275c0cae7bf6fe44ea3806b216840383edbd8b2011e360390680efa563259dea"
+
+[workflows]
+runButton = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node --max-old-space-size=8192 dist/bot.js"
+waitForPort = 5000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 23636
+externalPort = 3000
+
+[deployment]
+deploymentTarget = "vm"
+run = ["node", "--max-old-space-size=8192", "dist/bot.js"]

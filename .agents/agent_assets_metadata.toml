@@ -1,0 +1,29 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "EBZppV58E48BOXwrinmL9"
+uri = "file://attached_assets/generated_images/pokedex-pixel-example.png"
+type = "image"
+title = "Pixel Art Pokedex Card — Example"
+
+[[outputs]]
+id = "0DctrQTS5TJJfwy71uT5w"
+uri = "file://attached_assets/generated_images/ds_battle_screen.png"
+type = "image"
+title = "Nintendo DS Pokemon Battle Screen"
+description = "Pixel art DS battle screen — Bluffin (white bird, purple wings) vs Florabri (green leaf dinosaur), exact DS UI style"
+
+[[outputs]]
+id = "8Ch4rJf1ljAw0-CVP0OLY"
+uri = "file://attached_assets/generated_images/ds_battle_custom.png"
+type = "image"
+title = "Nintendo DS Battle Screen — Bluffin vs Florabri"
+description = "Pixel art DS battle screen with full UI — HP bars, status panels, FIGHT/BAG/MONSTER/RUN menu, 4:3 composition"
+
+[[outputs]]
+id = "RxiRNIDBiV1Q_6ZpLGcyJ"
+uri = "file://screenshots/nsfw-waifu-output.png"
+type = "image"
+title = "NSFW Waifu API output"
+description = "Latest image returned by https://rjdev-org.vercel.app/api/nsfw/waifu"

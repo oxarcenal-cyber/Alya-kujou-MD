@@ -1,0 +1,9 @@
+- [Baileys migration](baileys-migration.md) — whiskeysockets alias + protobufjs resolution + TS5 + KEY_MAP additions must all be done together
+- [Canvas native lib](canvas-native.md) — canvas.node requires libuuid at runtime; fetch prebuilt with node-pre-gyp after yarn install
+- [Native module builds](native-modules.md) — sharp@0.30.7 and canvas@2.11.2 binaries not auto-built by pnpm; manual prebuild-install steps required after fresh install
+- [External weeb/anime API reliability](external-weeb-apis.md) — waifu.im is Cloudflare-blocked; Jikan (MAL) is 429/504 rate-limited; use retry + nekos.best fallback
+- [Utils command API fixes](utils-api-fixes.md) — Quotly lyo.su=526, Genius=403, Telegraph=broken; replacements: canvas local, lrclib.net, gofile.io
+- [Bot persona/theme switch](persona-theme-switch.md) — bot-wide personality switch pattern (dialogue lib + AI prompt + QR page) mirrors existing per-group Lang.ts switch, but stored in-memory like prefix (resets on restart).
+- [Startup logging](startup-logging.md) — aggregate noisy asset/command startup events into one summary; keep errors and post-start runtime logs separate
+- [Legacy Pokémon records](legacy-pokemon-records.md) — Pokémon party entries can lack required display fields despite the current schema; UI commands must use safe fallbacks
+- [WhatsApp LID calls](whatsapp-lid-calls.md) — unresolved @lid caller IDs must not be passed to block APIs without a PN mapping

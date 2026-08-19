@@ -1,0 +1,46 @@
+{
+  "name": "Rias-Gremory",
+  "description": "A Advanced WhatsApp bot written in TypeScript using Ultra Baileys",
+  "keywords": [
+    "bot",
+    "whatsapp",
+    "whatsapp-bot",
+    "whatsapp-anime-bot"
+  ],
+  "logo": "https://i.ibb.co/wpkCJGK/eb7e9b7de2c379f544fb8cd3527bc587.jpg",
+  "website": "https://github.com/REDZEOX/Rias-Gremory#readme",
+  "repository": "https://github.com/REDZEOX/Rias-Gremory.git",
+  "success_url": "/",
+  "env": {
+    "BOT_NAME": {
+        "description": "Name of your bot"
+    },
+    "PREFIX": {
+      "description": "Prefix of your bot"
+    },
+    "SESSION": {
+      "description": "A string for the session to be classified and to get access to the server endpoints"
+    },
+    "MODS": {
+      "description": "The phone numbers of the users who you want to be admin for the bot (should be in international format without + and multiple numbers must be separated by a comma \",\")",
+      "required": false
+    },
+    "MONGO_URI": {
+      "description": "A secret String for Mongodb Connection.(Required)"
+    },
+    "CHAT_BOT_URL": {
+      "description": "Your API key from Brainshop"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "https://github.com/clhuang/heroku-buildpack-webp-binaries.git"
+    },
+    {
+      "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git"
+    }
+  ]
+}
